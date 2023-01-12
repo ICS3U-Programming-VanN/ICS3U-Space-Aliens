@@ -34,7 +34,41 @@ def game_scene():
 
     # Repeats forever (game loops)
     while True:
-        # User Input
+        # Gets User Input
+        keys = ugame.buttons.get_pressed()
+
+        # IF the user presses the A button
+        if keys & ugame.K_X:
+            print("A pressed")
+
+        # IF the user presses the B button
+        if keys & ugame.K_O:
+            print("B pressed")
+
+        # IF the user presses the START button
+        if keys & ugame.K_START:
+            print("START pressed")
+
+        # IF the user presses the SELECT button
+        if keys & ugame.K_SELECT:
+            print("SELECT pressed")
+
+        # IF the user presses the "Right" button
+        if keys & ugame.K_RIGHT:
+            ship.move(ship.x + 1, ship.y)
+
+        # IF the user presses the "Left" button
+        if keys & ugame.K_LEFT:
+            ship.move(ship.x - 1, ship.y)
+
+        # IF the user presses the "Up" button
+        if keys & ugame.K_UP:
+            ship.move(ship.x, ship.y - 1)
+
+        # IF the user presses the "Down" button
+        if keys & ugame.K_DOWN:
+            ship.move(ship.x, ship.y + 1)
+
         # Renders the sprites
         game.render_sprites([ship])
 
