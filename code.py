@@ -4,10 +4,9 @@
 # This program is that "Space Aliens" game on the PyBadge
 
 
+import constants
 import stage
 import ugame
-
-import constants
 
 
 def game_scene():
