@@ -33,3 +33,9 @@ button_states = {
     "button_still_pressed": "still pressed",
     "button_released": "released",
 }
+
+# Palette for red text
+RED_PALETTE = (
+    b"\xff\xff\x00\x22\xcey\x22\xff\xff\xff\xff\xff\xff\xff\xff\xff"
+    b"\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"
+)

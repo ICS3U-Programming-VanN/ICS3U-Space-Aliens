@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Created by: Van Nguyen
 # Created on: Jan, 9 2023
-# This program is that "Space Aliens" game on the PyBadge
+# This program is the "Climb to the sky" game on the PyBadge
 
 
 import constants
@@ -9,9 +9,72 @@ import stage
 import ugame
 
 
-def game_scene():
-    # This function is the main game game_scene
+# This function is for the Menu Scene
+def menu_scene():
+    # Loads background and sprite image bank
+    image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
 
+    # Adds text object
+    text = []
+
+    # Creates text object
+    text1 = stage.Text(
+        width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
+
+    # Moves text to (20, 10)
+    text1.move(20, 10)
+
+    # Sets the text to "VAN UNITED GAMES"
+    text1.text("VAN UNITED GAMES")
+
+    # Adds text object to the text list
+    text.append(text1)
+
+    # Creates another text object
+    text2 = stage.Text(
+        width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
+
+    # Moves text object to (40, 110)
+    text2.move(40, 110)
+
+    # Sets text object to "PRESS START"
+    text2.text("PRESS START")
+
+    # Adds text object to text list
+    text.append(text2)
+
+    # Creates background grid
+    background = stage.Grid(
+        image_bank_mt_background, constants.SCREEN_X, constants.SCREEN_Y
+    )
+
+    # Creates the state object and sets the FPS to 60
+    game = stage.Stage(ugame.display, constants.FPS)
+
+    # Adds background to layers list
+    game.layers = text + [background]
+
+    # Draws the background
+    game.render_block()
+
+    # Loops forever
+    while True:
+        # Gets user input
+        keys = ugame.buttons.get_pressed()
+
+        # IF the start button is pressed
+        if keys & ugame.K_START != 0:
+            # Plays the game scene
+            game_scene()
+
+        # Ensures that the game will be at 60fps by stopping loop
+        game.tick()
+
+
+# This function is the main game game_scene
+def game_scene():
     # Image bank for CircuitPython
     image_bank_background = stage.Bank.from_bmp16("space_aliens_background.bmp")
     # ****Reminder: change the sprites later
@@ -134,4 +197,5 @@ def game_scene():
 
 
 if __name__ == "__main__":
-    game_scene()
+    # Starts Menu Scece
+    menu_scene()
