@@ -4,9 +4,80 @@
 # This program is the "Climb to the sky" game on the PyBadge
 
 
+import random
+import time
+
 import constants
 import stage
 import ugame
+
+
+# This function is for the splash scene
+def splash_scene():
+    # Prepares the splash scene sound
+    coin_sound = open("coin.wab", "rb")
+
+    # Accesses the audio module from the ugame library
+    sound = ugame.audio
+
+    # Stops any sound from currently playing
+    sound.stop()
+
+    # Un-mutes the sound
+    sound.mute(False)
+    sound.play(coin_sound)
+
+    # Loads the background and sprite image bank
+    image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
+
+    # Creates the background image
+    background = stage.Grid(
+        image_bank_mt_background, constants.SCREEN_X, constants.SCREEN_Y
+    )
+
+    # Split the image into tile:
+    background.tile(2, 2, 0)  # blank white
+    background.tile(3, 2, 1)
+    background.tile(4, 2, 2)
+    background.tile(5, 2, 3)
+    background.tile(6, 2, 4)
+    background.tile(7, 2, 0)  # blank white
+
+    background.tile(2, 3, 0)  # blank white
+    background.tile(3, 3, 5)
+    background.tile(4, 3, 6)
+    background.tile(5, 3, 7)
+    background.tile(6, 3, 8)
+    background.tile(7, 3, 0)  # blank white
+
+    background.tile(2, 4, 0)  # blank white
+    background.tile(3, 4, 9)
+    background.tile(4, 4, 10)
+    background.tile(5, 4, 11)
+    background.tile(6, 4, 12)
+    background.tile(7, 4, 0)  # blank white
+
+    background.tile(2, 5, 0)  # blank white
+    background.tile(3, 5, 0)
+    background.tile(4, 5, 13)
+    background.tile(5, 5, 14)
+    background.tile(6, 5, 0)
+    background.tile(7, 5, 0)  # blank white
+
+    #
+    game = stage.Stage(ugame.display, constants.FPS)
+
+    # Adds the background to the layers list
+    game.layers = [background]
+
+    # Renders the background
+    game.render_block()
+
+    # Game loop forever
+    while True:
+        # Pauses for 2 seconds then switches to menu scene
+        time.sleep(2.0)
+        menu_scene()
 
 
 # This function is for the Menu Scene
@@ -101,13 +172,26 @@ def game_scene():
 
     # Sets the background to image 0 in the image bank
     # and sets size to 10x8 tiles of size 16x16
-    background = stage.Grid(image_bank_background, 10, 8)
+    background = stage.Grid(
+        image_bank_background, constants.SCREEN_X, constants.SCREEN_Y
+    )
+
+    # Randomizes the game scene background
+    # Iterates through each X and Y coordinate
+    for x_location in range(constants.SCREEN_GRID_X):
+        for y_location in range(constants.SCREEN_GRID_Y):
+            # Picks a random tile from (1-3)
+            tile_picked = random.randint(1, 3)
+
+            # Places the tile at X and Y location
+            background.tile(x_location, y_location, tile_picked)
 
     # User's sprite that will continually update
     ship = stage.Sprite(
         image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE)
     )
 
+    # Lighting bolt sprite will come at the user
     lighting_bolt = stage.Sprite(
         image_bank_sprites,
         9,
@@ -197,5 +281,5 @@ def game_scene():
 
 
 if __name__ == "__main__":
-    # Starts Menu Scece
-    menu_scene()
+    # Starts Splash Scene
+    splash_scene()
