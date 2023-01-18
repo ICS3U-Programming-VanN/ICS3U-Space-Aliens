@@ -20,11 +20,35 @@ SPRITE_SIZE = 16
 # Defines the number of lighting bolts in the game
 TOTAL_NUMBER_OF_LIGHTING_BOLTS = 5
 
+# Defines the limit of lasers in the game
+TOTAL_NUMBER_OF_LASERS = 10
+
 # Defines the frames per second
 FPS = 60
 
-# Defines the sprite movement speed
+# Sets the sprite movement speed
 SPRITE_MOVEMENT_SPEED = 1
+
+# Sets the ship speed
+SHIP_SPEED = 1
+
+# Sets the alien speed
+ALIEN_SPEED = 1
+
+# Sets the laser speed
+LASER_SPEED = 2
+
+# Sets how far the lasers/aliens will be off the screen for x coordinate
+OFF_SCREEN_X = -100
+
+# Sets how far the lasers/aliens will be off the screen for y coordinate
+OFF_SCREEN_Y = -100
+
+# Makes sure that the bottom of sprite is off screen from the top
+OFF_TOP_SCREEN = -1 * SPRITE_SIZE
+
+# Makes sure sprite is off the screen from the bottom
+OFF_BOTTOM_SCREEN = SCREEN_Y + SPRITE_SIZE
 
 # For button states
 button_states = {
