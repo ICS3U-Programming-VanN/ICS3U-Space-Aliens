@@ -150,6 +150,21 @@ def game_scene():
     # Initialize Score Variable
     score = 0
 
+    # Creates text object
+    score_text = stage.Text(width=29, height=14)
+
+    # Clears the text object
+    score_text.clear()
+
+    # Sets the cursor position
+    score_text.cursor(0, 0)
+
+    # Moves text position
+    score_text.move(1, 1)
+
+    # Displays the score
+    score_text.text(f"Score: {score}")
+
     # This function takes the lighting bolt from off the screen to off the screen
     def show_lighting_bolt():
         # Iterates through each lighting bolt held in the lighting_bolt list
@@ -266,7 +281,7 @@ def game_scene():
     game = stage.Stage(ugame.display, constants.FPS)
 
     # Sets all layers of the sprites and determines the order they show up
-    game.layers = lasers + [ship] + lighting_bolt + [background]
+    game.layers = [score_text] + lasers + [ship] + lighting_bolt + [background]
 
     # Renders all sprites
     game.render_block()
@@ -382,6 +397,26 @@ def game_scene():
                     # Calls function to show the lighting bolt
                     show_lighting_bolt()
 
+                    # Decrements score by 1
+                    score -= 1
+
+                    # Ensures that the score stays at 0 or above
+                    if score < 0:
+                        # Sets score to zero
+                        score = 0
+
+                    # Clears the score text
+                    score_text.clear()
+
+                    # Sets the cursor to (0, 0)
+                    score_text.cursor(0, 0)
+
+                    # Moves the score text to (1, 1)
+                    score_text.move(1, 1)
+
+                    # Displays the score/reprints it
+                    score_text.text("Score: {0}".format(score))
+
         # Iterates through lasers list
         for laser_number in range(len(lasers)):
             # IF the laser is on screen
@@ -423,6 +458,14 @@ def game_scene():
 
                             # Increments the score
                             score = score + 1
+
+                            # Clears the score text and reprints/resets it
+                            score_text.clear()
+                            score_text.cursor(0, 0)
+                            score_text.move(1, 1)
+
+                            # Displays updated score
+                            score_text.text("Score: {0}".format(score))
 
         # Renders the sprites
         game.render_sprites(lasers + [ship] + lighting_bolt)

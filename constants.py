@@ -21,7 +21,7 @@ SPRITE_SIZE = 16
 TOTAL_NUMBER_OF_LIGHTING_BOLTS = 5
 
 # Defines the limit of lasers in the game
-TOTAL_NUMBER_OF_LASERS = 10
+TOTAL_NUMBER_OF_LASERS = 5
 
 # Defines the frames per second
 FPS = 60
