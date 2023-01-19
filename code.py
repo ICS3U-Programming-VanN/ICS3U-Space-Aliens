@@ -146,6 +146,24 @@ def menu_scene():
 
 # This function is the main game game_scene
 def game_scene():
+    # This function takes the lighting bolt from off the screen to off the screen
+    def show_lighting_bolt():
+        # Iterates through each lighting bolt held in the lighting_bolt list
+        for lighting_bolt_number in range(len(lighting_bolt)):
+            # IF the lighting bolt is off screen
+            if lighting_bolt[lighting_bolt_number].x < 0:
+                # Moves the lighting bolt to a random place at the top of the screen
+                lighting_bolt[lighting_bolt_number].move(
+                    random.randint(
+                        0 + constants.SPRITE_SIZE,
+                        constants.SCREEN_X - constants.SPRITE_SIZE,
+                    ),
+                    constants.OFF_TOP_SCREEN,
+                )
+
+                # Exits loop once the alien has been place back on the screen
+                break
+
     # Image bank for CircuitPython
     image_bank_background = stage.Bank.from_bmp16("space_aliens_background.bmp")
     # ****Reminder: change the sprites later
@@ -191,13 +209,28 @@ def game_scene():
         image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE)
     )
 
-    # Lighting bolt sprite will come at the user
+    # Lighting bolt sprite that will come at the user
     lighting_bolt = stage.Sprite(
         image_bank_sprites,
         9,
         int(constants.SCREEN_X / 2 - constants.SPRITE_SIZE / 2),
         16,
     )
+
+    # Creates list to hold all the lighting bolts
+    lighting_bolt = []
+
+    # Creates a lighting bolt object for the number of MAX lighting bolts
+    for lighting_number in range(constants.TOTAL_NUMBER_OF_LIGHTING_BOLTS):
+        a_single_lighting_bolt = stage.Sprite(
+            image_bank_sprites, 9, constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+        )
+
+        # Appends the lighting bolt to the list
+        lighting_bolt.append(a_single_lighting_bolt)
+
+    # Calls function to place the lighting bolt on the screen at a random location from the top
+    show_lighting_bolt()
 
     # Creates list for lasers to be shot
     lasers = []
@@ -213,10 +246,10 @@ def game_scene():
         lasers.append(a_single_laser)
 
     # Creates stage for background and sets framerate to 60fps
-    game = stage.Stage(ugame.display, 60)
+    game = stage.Stage(ugame.display, constants.FPS)
 
     # Sets all layers of the sprites and determines the order they show up
-    game.layers = lasers + [ship] + [lighting_bolt] + [background]
+    game.layers = lasers + [ship] + lighting_bolt + [background]
 
     # Renders all sprites
     game.render_block()
@@ -312,8 +345,28 @@ def game_scene():
                         constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
                     )
 
+        # Iterates for each lighting bolt in the lighting_bolt list
+        for lighting_bolt_number in range(len(lighting_bolt)):
+            # If the lighting of is on the screen
+            if lighting_bolt[lighting_bolt_number].x > 0:
+                # Moves the lighting bolt down (at the lighting bolt speed)
+                lighting_bolt[lighting_bolt_number].move(
+                    lighting_bolt[lighting_bolt_number].x,
+                    lighting_bolt[lighting_bolt_number].y + constants.ALIEN_SPEED,
+                )
+
+                # IF the lighting bolt has gone off screen
+                if lighting_bolt[lighting_bolt_number].y > constants.SCREEN_Y:
+                    # Moves lighting bolt to off screen holding location
+                    lighting_bolt[lighting_bolt_number].move(
+                        constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+                    )
+
+                    # Calls function to show the lighting bolt
+                    show_lighting_bolt()
+
         # Renders the sprites
-        game.render_sprites(lasers + [ship] + [lighting_bolt])
+        game.render_sprites(lasers + [ship] + lighting_bolt)
 
         # Ensures that the game will run at 60fps by pausing the loops
         game.tick()
