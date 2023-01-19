@@ -9,8 +9,8 @@ import time
 
 import constants
 import stage
-import ugame
 import supervisor
+import ugame
 
 
 # This function is for the splash scene
