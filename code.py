@@ -10,6 +10,7 @@ import time
 import constants
 import stage
 import ugame
+import supervisor
 
 
 # This function is for the splash scene
@@ -210,6 +211,19 @@ def game_scene():
     # Prepares the sound
     # Open the "boom.wav" file for reading
     boom_sound = open("boom.wav", "rb")
+
+    # Accesses the audio module of the ugame library
+    sound = ugame.audio
+
+    # Stops any playing sounds
+    sound.stop()
+
+    # Un-mutes the music/sounds
+    sound.mute(False)
+
+    # Prepares the sound
+    # Open the "boom.wav" file for reading
+    crash_sound = open("crash.wav", "rb")
 
     # Accesses the audio module of the ugame library
     sound = ugame.audio
@@ -467,10 +481,116 @@ def game_scene():
                             # Displays updated score
                             score_text.text("Score: {0}".format(score))
 
+        # Checks if the lighting bolts have collided with the user
+        for lighting_bolt_number in range(len(lighting_bolt)):
+            # Checks if the lighting bolt is off screen
+            if lighting_bolt[lighting_bolt_number].x > 0:
+                # Checks if the lighting bolt and the user's sprite have collided using the location of sprite (hitboxes)
+                if stage.collide(
+                    lighting_bolt[lighting_bolt_number].x + 1,
+                    lighting_bolt[lighting_bolt_number].y,
+                    lighting_bolt[lighting_bolt_number].x + 15,
+                    lighting_bolt[lighting_bolt_number].y + 15,
+                    ship.x,
+                    ship.y,
+                    ship.x + 15,
+                    ship.y + 15,
+                ):
+                    # Stops any sound actively playing
+                    sound.stop()
+
+                    # Plays the crash sound
+                    sound.play(crash_sound)
+
+                    # Pauses the game for 3 seconds before continuing
+                    time.sleep(3.0)
+
+                    # Calls the game_over_scene function to send user to the game over scene, passes their final score to be displayed
+                    game_over_scene(score)
+
         # Renders the sprites
         game.render_sprites(lasers + [ship] + lighting_bolt)
 
         # Ensures that the game will run at 60fps by pausing the loops
+        game.tick()
+
+
+# This function displays the game over scene and the user's final score
+# This function allows the user to restart the game by pressing SELECT
+def game_over_scene(final_score):
+    # Loads image bank for background
+    image_bank_2 = stage.Bank.from_bmp16("mt_game_studio.bmp")
+
+    # Uses image bank to create background
+    background = stage.Grid(
+        image_bank_2, constants.SCREEN_GRID_X, constants.SCREEN_GRID_Y
+    )
+
+    # Creates list for text
+    text = []
+
+    # Creates text object
+    text1 = stage.Text(
+        width=29, height=14, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
+
+    # Moves text object to (22, 20)
+    text1.move(22, 20)
+
+    # Displays the Final Score
+    text1.text("Final Score: {:0>2d}".format(final_score))
+
+    # Adds text object to text list
+    text.append(text1)
+
+    # Creates second text object
+    text2 = stage.Text(
+        width=29, height=14, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
+
+    # Moves text object to (43, 60)
+    text2.move(43, 60)
+
+    # Displays GAME OVER
+    text2.text("GAME OVER")
+
+    # Adds text object to text list
+    text.append(text2)
+
+    # Create third text object
+    text3 = stage.Text(
+        width=29, height=14, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
+
+    # Moves text object to (32, 110)
+    text3.move(32, 110)
+
+    # Displays PRESS SELECT
+    text3.text("PRESS SELECT")
+
+    # Adds text object to text list
+    text.append(text3)
+
+    # Creates stage object to run the game and manage input
+    game = stage.Stage(ugame.display, constants.FPS)
+
+    # Determines the layers for the text and background on screen
+    game.layers = text + [background]
+
+    # Draws the background and text
+    game.render_block()
+
+    # Game Loop
+    while True:
+        # Checks if input
+        keys = ugame.buttons.get_pressed()
+
+        # IF the SELECT button is pressed
+        if keys & ugame.K_SELECT != 0:
+            # Reloads the game
+            supervisor.reload()
+
+        # Ensures that the game is at 60fps by pausing loop
         game.tick()
 
 
