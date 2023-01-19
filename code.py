@@ -146,6 +146,10 @@ def menu_scene():
 
 # This function is the main game game_scene
 def game_scene():
+
+    # Initialize Score Variable
+    score = 0
+
     # This function takes the lighting bolt from off the screen to off the screen
     def show_lighting_bolt():
         # Iterates through each lighting bolt held in the lighting_bolt list
@@ -178,6 +182,19 @@ def game_scene():
     # Prepares the sound
     # Open the "pew.wav" file for reading
     firing_sound = open("pew.wav", "rb")
+
+    # Accesses the audio module of the ugame library
+    sound = ugame.audio
+
+    # Stops any playing sounds
+    sound.stop()
+
+    # Un-mutes the music/sounds
+    sound.mute(False)
+
+    # Prepares the sound
+    # Open the "boom.wav" file for reading
+    boom_sound = open("boom.wav", "rb")
 
     # Accesses the audio module of the ugame library
     sound = ugame.audio
@@ -260,7 +277,7 @@ def game_scene():
         keys = ugame.buttons.get_pressed()
 
         # IF the user presses the A button
-        if keys & ugame.K_O != 0:
+        if keys & ugame.K_X != 0:
             # If the A button was pressed, updates button state
             if a_button == constants.button_states["button_up"]:
                 a_button = constants.button_states["button_just_pressed"]
@@ -277,7 +294,7 @@ def game_scene():
                 a_button = constants.button_states["button_up"]
 
         # IF the user presses the B button
-        if keys & ugame.K_X != 0:
+        if keys & ugame.K_O != 0:
             pass
 
         # IF the user presses the START button
@@ -364,6 +381,48 @@ def game_scene():
 
                     # Calls function to show the lighting bolt
                     show_lighting_bolt()
+
+        # Iterates through lasers list
+        for laser_number in range(len(lasers)):
+            # IF the laser is on screen
+            if lasers[laser_number].x > 0:
+                # Iterates for the length of lighting_bolt list
+                for lighting_bolt_number in range(len(lighting_bolt)):
+                    # IF the alien is on screen
+                    if lighting_bolt[lighting_bolt_number].x > 0:
+                        # IF the laser and alien collide
+                        if stage.collide(
+                            lasers[laser_number].x + 6,
+                            lasers[laser_number].y + 2,
+                            lasers[laser_number].x + 11,
+                            lasers[laser_number].y + 12,
+                            lighting_bolt[lighting_bolt_number].x + 1,
+                            lighting_bolt[lighting_bolt_number].y,
+                            lighting_bolt[lighting_bolt_number].x + 15,
+                            lighting_bolt[lighting_bolt_number].y + 15,
+                        ):
+                            # Moves the lighting bolt off screen
+                            lighting_bolt[lighting_bolt_number].move(
+                                constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+                            )
+
+                            # Moves the laser off screen
+                            lasers[laser_number].move(
+                                constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+                            )
+
+                            # Stops any sound from playing
+                            sound.stop()
+
+                            # Plays the boom sound
+                            sound.play(boom_sound)
+
+                            # Calls function twice to spawn two new lighting bolts
+                            show_lighting_bolt()
+                            show_lighting_bolt()
+
+                            # Increments the score
+                            score = score + 1
 
         # Renders the sprites
         game.render_sprites(lasers + [ship] + lighting_bolt)
