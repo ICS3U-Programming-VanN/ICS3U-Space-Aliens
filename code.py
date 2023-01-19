@@ -78,12 +78,12 @@ def splash_scene():
     while True:
         # Checks for input
         keys = ugame.buttons.get_pressed()
-    
+
         # IF the user presses the B button
         # Mutes game
         if keys & ugame.K_O != 0:
             sound.mute(True)
-    
+
         # Pauses for 2 seconds then switches to menu scene
         time.sleep(2.0)
         menu_scene()
@@ -603,7 +603,7 @@ def game_over_scene(final_score):
         if keys & ugame.K_SELECT != 0:
             # Reloads the game
             supervisor.reload()
-        
+
         # IF the user presses the B button
         # Mutes game
         if keys & ugame.K_O != 0:
