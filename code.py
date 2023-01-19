@@ -76,6 +76,14 @@ def splash_scene():
 
     # Game loop forever
     while True:
+        # Checks for input
+        keys = ugame.buttons.get_pressed()
+    
+        # IF the user presses the B button
+        # Mutes game
+        if keys & ugame.K_O != 0:
+            sound.mute(True)
+    
         # Pauses for 2 seconds then switches to menu scene
         time.sleep(2.0)
         menu_scene()
@@ -108,11 +116,11 @@ def menu_scene():
         width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None
     )
 
-    # Moves text object to (40, 110)
-    text2.move(40, 110)
+    # Moves text object to (40, 60)
+    text2.move(40, 60)
 
     # Sets text object to "PRESS START"
-    text2.text("PRESS START")
+    text2.text("PRESS START\nB to MUTE\nA to Shoot")
 
     # Adds text object to text list
     text.append(text2)
@@ -140,6 +148,11 @@ def menu_scene():
         if keys & ugame.K_START != 0:
             # Plays the game scene
             game_scene()
+
+        # IF the user presses the B button
+        # Mutes game
+        if keys & ugame.K_O != 0:
+            sound.mute(True)
 
         # Ensures that the game will be at 60fps by stopping loop
         game.tick()
@@ -323,8 +336,9 @@ def game_scene():
                 a_button = constants.button_states["button_up"]
 
         # IF the user presses the B button
+        # Mutes game
         if keys & ugame.K_O != 0:
-            pass
+            sound.mute(True)
 
         # IF the user presses the START button
         if keys & ugame.K_START != 0:
@@ -582,13 +596,18 @@ def game_over_scene(final_score):
 
     # Game Loop
     while True:
-        # Checks if input
+        # Checks for input
         keys = ugame.buttons.get_pressed()
 
         # IF the SELECT button is pressed
         if keys & ugame.K_SELECT != 0:
             # Reloads the game
             supervisor.reload()
+        
+        # IF the user presses the B button
+        # Mutes game
+        if keys & ugame.K_O != 0:
+            sound.mute(True)
 
         # Ensures that the game is at 60fps by pausing loop
         game.tick()
