@@ -2,6 +2,8 @@
 # Created by: Van Nguyen
 # Created on: Jan, 9 2023
 # This program is the "Climb to the sky" game on the PyBadge
+# In the game, the user must dodge lighting bolts and counter them
+# for points, if they get 20 points before getting hit, they win
 
 
 import random
