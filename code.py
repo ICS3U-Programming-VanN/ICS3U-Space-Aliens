@@ -84,6 +84,11 @@ def splash_scene():
         if keys & ugame.K_O != 0:
             sound.mute(True)
 
+        # IF the user presses the "Down" button
+        # Un-mutes game
+        if keys & ugame.K_DOWN != 0:
+            sound.mute(False)
+
         # Pauses for 2 seconds then switches to menu scene
         time.sleep(2.0)
         menu_scene()
@@ -91,6 +96,9 @@ def splash_scene():
 
 # This function is for the Menu Scene
 def menu_scene():
+    # Accesses the audio module from the ugame library
+    sound = ugame.audio
+
     # Loads background and sprite image bank
     image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
 
@@ -117,10 +125,10 @@ def menu_scene():
     )
 
     # Moves text object to (40, 60)
-    text2.move(40, 60)
+    text2.move(40, 40)
 
     # Sets text object to "PRESS START"
-    text2.text("PRESS START\nB to MUTE\nA to Shoot")
+    text2.text("PRESS START\nB to MUTE\nDOWN BUTTON TO\nUN-MUTE\n\nA to Shoot")
 
     # Adds text object to text list
     text.append(text2)
@@ -153,6 +161,11 @@ def menu_scene():
         # Mutes game
         if keys & ugame.K_O != 0:
             sound.mute(True)
+
+        # IF the user presses the "Down" button
+        # Un-mutes game
+        if keys & ugame.K_DOWN != 0:
+            sound.mute(False)
 
         # Ensures that the game will be at 60fps by stopping loop
         game.tick()
@@ -371,8 +384,9 @@ def game_scene():
             pass
 
         # IF the user presses the "Down" button
+        # Un-mutes game
         if keys & ugame.K_DOWN != 0:
-            pass
+            sound.mute(False)
 
         # IF A button is pressed
         if a_button == constants.button_states["button_just_pressed"]:
@@ -424,9 +438,6 @@ def game_scene():
 
                     # Calls function to show the lighting bolt
                     show_lighting_bolt()
-
-                    # Decrements score by 1
-                    score -= 1
 
                     # Ensures that the score stays at 0 or above
                     if score < 0:
@@ -495,6 +506,9 @@ def game_scene():
                             # Displays updated score
                             score_text.text("Score: {0}".format(score))
 
+        if score >= 20:
+            game_win_scene(score)
+
         # Checks if the lighting bolts have collided with the user
         for lighting_bolt_number in range(len(lighting_bolt)):
             # Checks if the lighting bolt is off screen
@@ -532,6 +546,9 @@ def game_scene():
 # This function displays the game over scene and the user's final score
 # This function allows the user to restart the game by pressing SELECT
 def game_over_scene(final_score):
+    # Accesses the audio module from the ugame library
+    sound = ugame.audio
+
     # Loads image bank for background
     image_bank_2 = stage.Bank.from_bmp16("mt_game_studio.bmp")
 
@@ -608,6 +625,103 @@ def game_over_scene(final_score):
         # Mutes game
         if keys & ugame.K_O != 0:
             sound.mute(True)
+
+        # IF the user presses the "Down" button
+        # Un-mutes game
+        if keys & ugame.K_DOWN != 0:
+            sound.mute(False)
+
+        # Ensures that the game is at 60fps by pausing loop
+        game.tick()
+
+
+# This function displays the game over/you win scene and the user's final score
+# This function allows the user to restart the game by pressing SELECT
+def game_win_scene(final_score):
+    # Accesses the audio module from the ugame library
+    sound = ugame.audio
+
+    # Loads image bank for background
+    image_bank_2 = stage.Bank.from_bmp16("mt_game_studio.bmp")
+
+    # Uses image bank to create background
+    background = stage.Grid(
+        image_bank_2, constants.SCREEN_GRID_X, constants.SCREEN_GRID_Y
+    )
+
+    # Creates list for text
+    text = []
+
+    # Creates text object
+    text1 = stage.Text(
+        width=29, height=14, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
+
+    # Moves text object to (22, 20)
+    text1.move(22, 20)
+
+    # Displays the Final Score
+    text1.text("Final Score: {:0>2d}".format(final_score))
+
+    # Adds text object to text list
+    text.append(text1)
+
+    # Creates second text object
+    text2 = stage.Text(
+        width=29, height=14, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
+
+    # Moves text object to (43, 60)
+    text2.move(20, 60)
+
+    # Displays You win message
+    text2.text("YOU WIN\nCONGRATULATIONS!\nYOU CAN PLAY AGAIN")
+
+    # Adds text object to text list
+    text.append(text2)
+
+    # Create third text object
+    text3 = stage.Text(
+        width=29, height=14, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
+
+    # Moves text object to (32, 110)
+    text3.move(32, 110)
+
+    # Displays PRESS SELECT
+    text3.text("PRESS SELECT")
+
+    # Adds text object to text list
+    text.append(text3)
+
+    # Creates stage object to run the game and manage input
+    game = stage.Stage(ugame.display, constants.FPS)
+
+    # Determines the layers for the text and background on screen
+    game.layers = text + [background]
+
+    # Draws the background and text
+    game.render_block()
+
+    # Game Loop
+    while True:
+        # Checks for input
+        keys = ugame.buttons.get_pressed()
+
+        # IF the SELECT button is pressed
+        if keys & ugame.K_SELECT != 0:
+            # Reloads the game
+            supervisor.reload()
+
+        # IF the user presses the B button
+        # Mutes game
+        if keys & ugame.K_O != 0:
+            sound.mute(True)
+
+        # IF the user presses the "Down" button
+        # Un-mutes game
+        if keys & ugame.K_DOWN != 0:
+            sound.mute(False)
 
         # Ensures that the game is at 60fps by pausing loop
         game.tick()
